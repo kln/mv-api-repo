@@ -61,3 +61,31 @@ services:
       - POSTGRES_DB=mv_api_development
     volumes:
       - ./postgres-data:/var/lib/postgresql/data-mv-api
+
+  cms_app:
+    build: ../cms-repo
+    container_name: "cms_app"
+    ports:
+      - "3002:3002"
+    depends_on:
+      - cms_app_db
+      - global_redis
+    environment:
+      - DATABASE_HOST=cms_app_db
+      - DATABASE_USERNAME=rails
+      - DATABASE_PASSWORD=rails
+      - REDIS_URL=redis://global_redis:6379/0
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./:/usr/src/cms-app
+
+  cms_app_db:
+    image: "postgres"
+    container_name: "cms_app_db"
+    environment:
+      - POSTGRES_USER=rails
+      - POSTGRES_PASSWORD=rails
+      - POSTGRES_DB=cms_app_development
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data-cms-app
