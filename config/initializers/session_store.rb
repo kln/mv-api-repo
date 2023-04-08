@@ -1,4 +1,4 @@
 Rails.application.config.session_store :redis_store,
-                                       servers: ['redis://localhost:6379/0/session'],
+                                       servers: [ENV['REDIS_URL']],
                                        expire_after: 90.minutes,
                                        key: '_mv_session'

@@ -3,6 +3,8 @@ services:
   global_redis:
     image: "redis"
     container_name: "global_redis"
+    ports:
+      - "6379:6379"
 
   student_dashboard:
     build: ../student-dashboard-repo
@@ -16,11 +18,11 @@ services:
       - DATABASE_HOST=student_dashboard_db
       - DATABASE_USERNAME=rails
       - DATABASE_PASSWORD=rails
-      - REDIS_URL=redis://redis:6379/0
+      - REDIS_URL=redis://global_redis:6379/0
     stdin_open: true
     tty: true
     volumes:
-      - ./:/usr/src/student-dashboard-app
+      - ../student-dashboard-repo:/usr/src/student-dashboard-app
 
   student_dashboard_db:
     image: "postgres"
@@ -44,7 +46,7 @@ services:
       - DATABASE_HOST=mv_api_db
       - DATABASE_USERNAME=rails
       - DATABASE_PASSWORD=rails
-      - REDIS_URL=redis://redis:6379/0
+      - REDIS_URL=redis://global_redis:6379/0
     stdin_open: true
     tty: true
     volumes:
