@@ -1,0 +1,61 @@
+version: "3"
+services:
+  global_redis:
+    image: "redis"
+    container_name: "global_redis"
+
+  student_dashboard:
+    build: ../student-dashboard-repo
+    container_name: "student_dashboard"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - student_dashboard_db
+      - global_redis
+    environment:
+      - DATABASE_HOST=student_dashboard_db
+      - DATABASE_USERNAME=rails
+      - DATABASE_PASSWORD=rails
+      - REDIS_URL=redis://redis:6379/0
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./:/usr/src/student-dashboard-app
+
+  student_dashboard_db:
+    image: "postgres"
+    container_name: "student_dashboard_db"
+    environment:
+      - POSTGRES_USER=rails
+      - POSTGRES_PASSWORD=rails
+      - POSTGRES_DB=student_dashboard_development
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
+  mv_api:
+    build: .
+    container_name: "mv_api"
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mv_api_db
+      - global_redis
+    environment:
+      - DATABASE_HOST=mv_api_db
+      - DATABASE_USERNAME=rails
+      - DATABASE_PASSWORD=rails
+      - REDIS_URL=redis://redis:6379/0
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./:/usr/src/mv-app
+
+  mv_api_db:
+    image: "postgres"
+    container_name: "mv_api_db"
+    environment:
+      - POSTGRES_USER=rails
+      - POSTGRES_PASSWORD=rails
+      - POSTGRES_DB=mv_api_development
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data-mv-api
