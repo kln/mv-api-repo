@@ -17,14 +17,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
   #   session[:user_role] = resource.role
   # end
 
-  protected
-
-  def after_sign_up_path_for(resource)
-    session[:user_email] = resource.email
-    session[:user_role] = resource.role
-
-    redirect_to root_path
-  end
   # GET /resource/edit
   # def edit
   #   super
@@ -49,7 +41,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   #   super
   # end
 
-  # protected
+  protected
 
   # If you have extra params to permit, append them to the sanitizer.
   # def configure_sign_up_params
@@ -62,9 +54,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   # The path used after sign up.
-  # def after_sign_up_path_for(resource)
-  #   super(resource)
-  # end
+  def after_sign_up_path_for(resource)
+    session[:user_email] = resource.email
+    session[:user_role] = resource.role
+
+    super(resource)
+  end
 
   # The path used after sign up for inactive accounts.
   # def after_inactive_sign_up_path_for(resource)
