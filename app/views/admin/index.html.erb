@@ -1,3 +1,6 @@
-HI USER
+<h1>MV API <%= current_user.email %></h1>
 
-<%= link_to 'Logout', sign_out_path %>
+<br>
+<br>
+<%= link_to "Sign Out", destroy_user_session_path, data: { "turbo-method": :delete } %>
+
